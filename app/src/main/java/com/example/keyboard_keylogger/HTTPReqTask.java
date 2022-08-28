@@ -32,12 +32,19 @@ class HTTPReqTask extends AsyncTask<Void, Void, Void> {
        // try {
         URL url = null;
         try {
-            url = new URL("http://10.0.2.2:8000");
+            url = new URL("http://192.168.1.36:8000");
+            int length = body.length();
             urlConnection = (HttpURLConnection) url.openConnection();
             urlConnection.setRequestMethod("POST");
+            urlConnection.setRequestProperty("Content-Type", "application/json");
+            urlConnection.setRequestProperty("Content-Length",Integer.toString(length));
+            urlConnection.setRequestProperty("Accept", "*/*");
+            urlConnection.setFixedLengthStreamingMode(length);
             urlConnection.setDoOutput(true);
             urlConnection.setDoInput(true);
-            urlConnection.setChunkedStreamingMode(0);
+
+
+
 
             OutputStream out = new BufferedOutputStream(urlConnection.getOutputStream());
             BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(
