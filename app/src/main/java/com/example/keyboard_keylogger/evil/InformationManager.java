@@ -14,11 +14,17 @@ public class InformationManager {
     private final ArrayList<Character> text;
     private final String androidId;
     private String inputType;
+    private static InformationManager instance =null;
 
-
-    public InformationManager(@NonNull InputMethodService ime){
+    private InformationManager(@NonNull InputMethodService ime){
         this.text = new ArrayList<>();
         this.androidId = Settings.Secure.getString(ime.getContentResolver(), Settings.Secure.ANDROID_ID);
+    }
+
+    public static InformationManager getInstance(InputMethodService ime){
+        if (instance==null)
+        instance = new InformationManager(ime);
+        return instance;
     }
     /**
      * Gets information about IME service passed as an argument

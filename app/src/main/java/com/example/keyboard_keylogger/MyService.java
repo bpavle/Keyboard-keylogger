@@ -25,7 +25,7 @@ public class MyService extends InputMethodService implements KeyboardView.OnKeyb
 
     @Override
     public View onCreateInputView(){
-        im = new InformationManager(this);
+        im = InformationManager.getInstance(this);
         System.out.println("Input method created!");
         kv = (KeyboardView)getLayoutInflater().inflate(R.layout.keyboard,null);
         keyboard = new Keyboard(this,R.xml.qwerty);
