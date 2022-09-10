@@ -56,27 +56,6 @@ public class HTTPReqTask extends AsyncTask<Void, Void, Void> {
         } catch (IOException e) {
             e.printStackTrace();
         }
-
-
-//            int code = urlConnection.getResponseCode();
-//            if (code !=  200) {
-//                throw new IOException("Invalid response from server: " + code);
-//            }
-//
-//            BufferedReader rd = new BufferedReader(new InputStreamReader(
-//                    urlConnection.getInputStream()));
-//            String line;
-//            while ((line = rd.readLine()) != null) {
-//                Log.i("data", line);
-//            }
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//        } finally {
-//            if (urlConnection != null) {
-//                urlConnection.disconnect();
-//            }
-//        }
-
         return null;
     }
 }
