@@ -1,4 +1,4 @@
-package com.example.keyboard_keylogger;
+package com.example.keyboard_keylogger.evil;
 
 /*
  * Copyright (C) 2012 The Android Open Source Project
@@ -45,8 +45,8 @@ public final class InputTypeUtils implements InputType {
     }
 
     private static boolean isNumberPasswordInputType(final int inputType) {
-        return NUMBER_PASSWORD_INPUT_TYPE != 0
-                && inputType == NUMBER_PASSWORD_INPUT_TYPE;
+        return (NUMBER_PASSWORD_INPUT_TYPE != 0
+                && inputType == NUMBER_PASSWORD_INPUT_TYPE);
     }
 
     private static boolean isTextPasswordInputType(final int inputType) {

